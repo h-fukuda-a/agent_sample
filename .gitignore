@@ -1,0 +1,157 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.conda/
+
+# IDE and Editors
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+.temp/
+.tmp/
+
+# AI/ML specific
+*.pkl
+*.pickle
+*.model
+*.h5
+*.pb
+models/
+checkpoints/
+wandb/
+.wandb/
+mlruns/
+.mlflow/
+
+# API keys and secrets
+.env.local
+.env.production
+.env.staging
+.env.development
+.env.test
+secrets.json
+config.json
+credentials.json
+*.key
+*.pem
+*.p12
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+
+# Cache directories
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+dist/
+build/
+out/
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+
+# Testing
+.nyc_output/
+coverage/
+*.lcov
+test-results/
+playwright-report/
+
+# Documentation build
+docs/_build/
+site/
+
+# Custom project files
+scratch/
+experiments/
+playground/
+.workspace/
+temp/
