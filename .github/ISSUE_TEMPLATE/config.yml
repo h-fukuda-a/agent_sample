@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📖 ドキュメント
+    url: https://github.com/h-fukuda-a/agent_sample/blob/main/README.md
+    about: プロジェクトの詳細なドキュメントを確認する
+  - name: 💬 ディスカッション
+    url: https://github.com/h-fukuda-a/agent_sample/discussions
+    about: 一般的な議論や アイデアの共有をする
