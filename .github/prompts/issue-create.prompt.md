@@ -1,5 +1,4 @@
 ---
-name: issue-create
 description: GitHub MCP経由でIssueを自動作成する
 ---
 

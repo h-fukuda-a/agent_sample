@@ -1,5 +1,4 @@
 ---
-name: pr-create
 description: Gitワークフローを自動化し、適切なブランチ作成、コミット、PRを一括で作成する
 ---
 
