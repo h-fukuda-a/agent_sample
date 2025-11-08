@@ -1,0 +1,87 @@
+name: Markdown Lint
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**.md'
+  push:
+    branches: [ main ]
+    paths:
+      - '**.md'
+
+jobs:
+  markdown-lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        
+    - name: Install markdownlint-cli
+      run: npm install -g markdownlint-cli
+      
+    - name: Create markdownlint config
+      run: |
+        cat > .markdownlint.json << 'EOF'
+        {
+          "MD013": {
+            "line_length": 120,
+            "code_blocks": false,
+            "tables": false
+          },
+          "MD033": false,
+          "MD041": false,
+          "MD022": false,
+          "MD032": false,
+          "MD009": {
+            "br_spaces": 2
+          },
+          "MD031": false,
+          "MD047": true
+        }
+        EOF
+        
+    - name: Run markdownlint
+      run: markdownlint "**/*.md" --ignore node_modules
+      
+    - name: Comment PR with results
+      if: failure() && github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { execSync } = require('child_process');
+          
+          try {
+            execSync('markdownlint "**/*.md" --ignore node_modules', { encoding: 'utf8' });
+          } catch (error) {
+            const comment = `## 📝 Markdown Lint Results
+            
+            **❌ Markdown linting failed**
+            
+            \`\`\`
+            ${error.stdout}
+            \`\`\`
+            
+            Please fix the markdown issues above before merging.
+            
+            ### Common fixes:
+            - Add blank lines around headings
+            - Add blank lines around lists  
+            - Ensure files end with a single newline
+            - Fix trailing spaces
+            
+            Run \`markdownlint "**/*.md"\` locally to check your changes.`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+          }
