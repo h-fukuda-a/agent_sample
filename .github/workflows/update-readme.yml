@@ -8,14 +8,16 @@ on:
       - '.copilot/**'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/scripts/**'
+      - '.github/workflows/update-readme.yml'
   pull_request:
     branches: [ main ]
-    types: [opened, synchronize]
-    paths:
-      - '.github/prompts/**'
-      - '.copilot/**'
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.github/scripts/**'
+    types: [opened, synchronize, reopened]
+    # 一時的にパス制限を削除してワークフローを確実に実行
+    # paths:
+    #   - '.github/prompts/**'
+    #   - '.copilot/**'
+    #   - '.github/ISSUE_TEMPLATE/**'
+    #   - '.github/scripts/**'
 
 jobs:
   update-readme:
@@ -39,22 +41,49 @@ jobs:
 
     - name: Verify script exists
       run: |
-        echo "Checking for README update script..."
+        echo "=== Environment Info ==="
+        echo "Working directory: $(pwd)"
+        echo "Node.js version: $(node --version)"
+        echo "Git version: $(git --version)"
+        echo ""
+        echo "=== Repository Structure ==="
+        find . -type f -name "*.js" -o -name "*.json" -o -name "*.md" | grep -E "(scripts|copilot|README)" | sort
+        echo ""
+        echo "=== Checking for README update script ==="
         if [ -f ".github/scripts/update-readme.js" ]; then
           echo "✅ Script found at .github/scripts/update-readme.js"
-          head -5 .github/scripts/update-readme.js
+          echo "File size: $(wc -l < .github/scripts/update-readme.js) lines"
+          echo "Permissions: $(ls -la .github/scripts/update-readme.js)"
         else
           echo "❌ Script not found at .github/scripts/update-readme.js"
-          echo "Available files:"
-          find . -name "update-readme.js" -type f 2>/dev/null || echo "No update-readme.js found"
+          echo "Available files in .github/scripts/:"
+          ls -la .github/scripts/ 2>/dev/null || echo "Directory .github/scripts/ does not exist"
           exit 1
         fi
+        echo ""
+        echo "=== Required Dependencies Check ==="
+        echo "Commands configuration:"
+        ls -la .copilot/commands.json 2>/dev/null && echo "✅ commands.json found" || echo "❌ commands.json missing"
+        echo "Prompts directory:"
+        ls -la .github/prompts/ 2>/dev/null && echo "✅ prompts directory found" || echo "❌ prompts directory missing"
+        echo "Issue templates:"
+        ls -la .github/ISSUE_TEMPLATE/ 2>/dev/null && echo "✅ issue templates found" || echo "❌ issue templates missing"
 
     - name: Generate README content
       id: generate
       run: |
         echo "Executing README update script..."
-        node .github/scripts/update-readme.js
+        node .github/scripts/update-readme.js || {
+          echo "❌ Script execution failed"
+          echo "=== Error Debug Info ==="
+          echo "Node.js process exit code: $?"
+          echo "Current directory contents:"
+          ls -la
+          echo "Script contents (first 20 lines):"
+          head -20 .github/scripts/update-readme.js
+          echo "=== End Debug Info ==="
+          exit 1
+        }
 
     - name: Check for changes
       id: changes
