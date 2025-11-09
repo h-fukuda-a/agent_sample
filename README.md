@@ -1,7 +1,7 @@
 # Agent Sample
 
 [![GitHub last commit](https://img.shields.io/github/last-commit/h-fukuda-a/agent_sample)](https://github.com/h-fukuda-a/agent_sample/commits)
-[![GitHub commits](https://img.shields.io/badge/commits-9-blue)](https://github.com/h-fukuda-a/agent_sample/commits)
+[![GitHub commits](https://img.shields.io/badge/commits-11-blue)](https://github.com/h-fukuda-a/agent_sample/commits)
 [![GitHub contributors](https://img.shields.io/badge/contributors-1-orange)](https://github.com/h-fukuda-a/agent_sample/graphs/contributors)
 
 AIエージェント開発のためのサンプルリポジトリです。効率的な開発ワークフローとドキュメント管理のためのツールとテンプレートを提供します。
@@ -79,7 +79,7 @@ Gitワークフローを自動化し、適切なブランチ作成、コミッ�
 
 ## 🗂️ プロジェクト構造
 
-```
+```text
 agent_sample/
 ├── .copilot/
 │   └── commands.json          # スラッシュコマンド定義
@@ -111,7 +111,7 @@ agent_sample/
 ## 📊 統計情報
 
 - **最終更新**: 2025-11-09
-- **総コミット数**: 9
+- **総コミット数**: 11
 - **コントリビューター数**: 1
 
 ## 📄 ライセンス
@@ -120,4 +120,4 @@ agent_sample/
 
 ---
 
-*このREADME.mdは自動生成されています。最終更新: 2025-11-09*
+このREADME.mdは自動生成されています。最終更新: 2025-11-09
