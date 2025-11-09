@@ -7,6 +7,7 @@ on:
       - '.github/prompts/**'
       - '.copilot/**'
       - '.github/ISSUE_TEMPLATE/**'
+      - '.github/scripts/**'
   pull_request:
     branches: [ main ]
     types: [opened, synchronize]
@@ -14,6 +15,7 @@ on:
       - '.github/prompts/**'
       - '.copilot/**'
       - '.github/ISSUE_TEMPLATE/**'
+      - '.github/scripts/**'
 
 jobs:
   update-readme:
@@ -28,28 +30,51 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         fetch-depth: 0
+        ref: ${{ github.head_ref }}
 
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '18'
 
+    - name: Verify script exists
+      run: |
+        echo "Checking for README update script..."
+        if [ -f ".github/scripts/update-readme.js" ]; then
+          echo "✅ Script found at .github/scripts/update-readme.js"
+          head -5 .github/scripts/update-readme.js
+        else
+          echo "❌ Script not found at .github/scripts/update-readme.js"
+          echo "Available files:"
+          find . -name "update-readme.js" -type f 2>/dev/null || echo "No update-readme.js found"
+          exit 1
+        fi
+
     - name: Generate README content
       id: generate
       run: |
-        # 自動生成スクリプトを実行
+        echo "Executing README update script..."
         node .github/scripts/update-readme.js
 
     - name: Check for changes
       id: changes
       run: |
-        git diff --quiet README.md || echo "changes=true" >> $GITHUB_OUTPUT
+        echo "Checking for README changes..."
+        if git diff --quiet README.md; then
+          echo "No changes detected"
+          echo "changes=false" >> $GITHUB_OUTPUT
+        else
+          echo "Changes detected in README.md"
+          echo "changes=true" >> $GITHUB_OUTPUT
+          echo "Showing diff:"
+          git diff README.md
+        fi
 
     - name: Commit changes (for main branch)
       if: steps.changes.outputs.changes == 'true' && github.ref == 'refs/heads/main'
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
         git add README.md
         git commit -m "docs(README): auto-update from prompts and templates
 
@@ -63,8 +88,17 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
+        echo "Updating README.md in PR #${{ github.event.number }}"
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
         git add README.md
-        git commit -m "docs(README): auto-update from prompts and templates" || echo "No changes to commit"
-        git push origin HEAD || echo "Push failed, possibly no changes"
+        git commit -m "docs(README): auto-update from prompts and templates" || {
+          echo "No changes to commit or commit failed"
+          exit 0
+        }
+        git push origin HEAD || {
+          echo "Push failed, checking status..."
+          git status
+          echo "Trying to push again with force..."
+          git push --force-with-lease origin HEAD
+        }

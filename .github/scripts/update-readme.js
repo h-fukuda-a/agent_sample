@@ -139,14 +139,35 @@ function analyzeIssueTemplates() {
  */
 function getGitStats() {
   try {
-    const commits = execSync('git rev-list --count HEAD', { encoding: 'utf8' }).trim();
-    const lastCommit = execSync('git log -1 --format="%cd" --date=short', { encoding: 'utf8' }).trim();
-    const contributors = execSync('git shortlog -sn | wc -l', { encoding: 'utf8' }).trim();
+    let commits, lastCommit, contributors;
+    
+    try {
+      commits = execSync('git rev-list --count HEAD 2>/dev/null', { encoding: 'utf8' }).trim();
+      commits = parseInt(commits) || 0;
+    } catch (error) {
+      console.warn('Warning: Could not get commit count:', error.message);
+      commits = 0;
+    }
+    
+    try {
+      lastCommit = execSync('git log -1 --format="%cd" --date=short 2>/dev/null', { encoding: 'utf8' }).trim();
+    } catch (error) {
+      console.warn('Warning: Could not get last commit date:', error.message);
+      lastCommit = new Date().toISOString().split('T')[0];
+    }
+    
+    try {
+      const shortlog = execSync('git shortlog -sn 2>/dev/null', { encoding: 'utf8' }).trim();
+      contributors = shortlog ? shortlog.split('\n').length : 1;
+    } catch (error) {
+      console.warn('Warning: Could not get contributors count:', error.message);
+      contributors = 1;
+    }
     
     return {
-      commits: parseInt(commits),
+      commits,
       lastCommit,
-      contributors: parseInt(contributors)
+      contributors
     };
   } catch (error) {
     console.error('Error getting git stats:', error.message);
@@ -301,12 +322,24 @@ agent_sample/
 function main() {
   try {
     console.log('🔄 README.mdを自動更新中...');
+    console.log('📍 作業ディレクトリ:', process.cwd());
+    
+    // 必要なディレクトリの存在確認
+    const requiredPaths = [PATHS.commands, PATHS.prompts, PATHS.issueTemplates];
+    for (const checkPath of requiredPaths) {
+      if (!fs.existsSync(checkPath)) {
+        console.warn(`⚠️ パスが見つかりません: ${checkPath}`);
+      } else {
+        console.log(`✅ パスを確認: ${checkPath}`);
+      }
+    }
     
     const newContent = generateReadmeContent();
     
     // 既存のREADME.mdをバックアップ
     if (fs.existsSync(PATHS.readme)) {
       fs.copyFileSync(PATHS.readme, `${PATHS.readme}.backup`);
+      console.log('💾 既存のREADME.mdをバックアップしました');
     }
     
     // 新しい内容を書き込み
@@ -315,8 +348,14 @@ function main() {
     console.log('✅ README.mdの更新が完了しました');
     console.log(`📊 生成された内容: ${newContent.split('\n').length} 行`);
     
+    // バックアップファイルを削除
+    if (fs.existsSync(`${PATHS.readme}.backup`)) {
+      fs.unlinkSync(`${PATHS.readme}.backup`);
+    }
+    
   } catch (error) {
     console.error('❌ README.md更新中にエラーが発生しました:', error.message);
+    console.error('スタックトレース:', error.stack);
     process.exit(1);
   }
 }
