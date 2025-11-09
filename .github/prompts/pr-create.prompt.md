@@ -52,13 +52,13 @@ git checkout -b {ブランチ名}
 ### 3. コミット実行
 **未コミットの変更がある場合のみ**実行：
 
-**3.1 変更内容の分析**
+#### 3.1 変更内容の分析
 ```bash
 git diff --stat    # 変更ファイル一覧
 git diff          # 詳細な変更内容
 ```
 
-**3.2 コミットメッセージ生成**
+#### 3.2 コミットメッセージ生成
 - **形式**: `{動詞}: {変更内容}` (50文字以内推奨)
 - **動詞の選択**:
   - `add`: 新規ファイル・機能追加
@@ -68,7 +68,7 @@ git diff          # 詳細な変更内容
   - `remove`: ファイル・機能削除
   - `docs`: ドキュメント変更のみ
 
-**3.3 コミット実行**
+#### 3.3 コミット実行
 ```bash
 git add .
 git commit -m "{生成したメッセージ}"
@@ -78,12 +78,12 @@ git commit -m "{生成したメッセージ}"
 
 ### 4. プッシュとPR作成
 
-**4.1 プッシュ実行**
+#### 4.1 プッシュ実行
 ```bash
 git push -u origin {ブランチ名}
 ```
 
-**4.2 PR本文作成**
+#### 4.2 PR本文作成
 `.github/pull_request_template.md` を参照して構造化された本文を作成：
 
 ```markdown
@@ -104,7 +104,7 @@ git push -u origin {ブランチ名}
 {実施したテストや確認内容}
 ```
 
-**4.3 PR作成実行**
+#### 4.3 PR作成実行
 GitHub MCPの適切なツール（例: `github-mcp-server-pull_request_write`）を使用：
 
 ```json
@@ -134,7 +134,7 @@ GitHub MCPの適切なツール（例: `github-mcp-server-pull_request_write`）
 ## 出力形式
 各ステップの実行結果を明確に報告：
 
-```
+```markdown
 ✅ {ステップ名}完了
    詳細: {実行内容}
 
@@ -147,7 +147,7 @@ GitHub MCPの適切なツール（例: `github-mcp-server-pull_request_write`）
 ```
 
 **最終報告形式**:
-```
+```markdown
 🎉 PR作成完了
 
 - **PR番号**: #{番号}
