@@ -177,7 +177,7 @@ GitHub MCPサーバーのツールを使用してIssueを作成：
 作成されたIssueの情報を明確に報告：
 
 **報告形式**:
-```
+```markdown
 ✅ Issue作成完了
 
 - **Issue番号**: #{番号}
