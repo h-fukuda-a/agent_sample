@@ -1,0 +1,19 @@
+{
+  "commands": {
+    "/docs-update": {
+      "description": "ドキュメントの更新・作成を自動化",
+      "prompt": ".github/prompts/docs-update.prompt.md",
+      "scope": "workspace"
+    },
+    "/issue-create": {
+      "description": "GitHub Issue作成の専門支援",
+      "prompt": ".github/prompts/issue-create.prompt.md",
+      "scope": "workspace"
+    },
+    "/pr-create": {
+      "description": "PR作成ワークフローの自動化",
+      "prompt": ".github/prompts/pr-create.prompt.md",
+      "scope": "workspace"
+    }
+  }
+}
